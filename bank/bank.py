@@ -59,6 +59,12 @@ class User:
         new_alias = Alias(alias_name, account_number, sort_code)
         self.aliases.append(new_alias)
 
+    def get_alias(self, alias_name):
+        for alias in self.aliases:
+            if alias.name == alias_name:
+                return alias
+        return None
+
     def get_balance(self):
         return self.account.get_balance()
 
