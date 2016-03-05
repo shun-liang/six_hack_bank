@@ -115,8 +115,3 @@ class Transaction:
             self.description = description
         else:
             self.description = ''
-
-def create_test_data():
-    add_user('john', '12345678', '102030')
-    user = get_user('john')
-    user.add_card('my maestro', '1234123412341234')
