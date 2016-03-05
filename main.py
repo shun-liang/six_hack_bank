@@ -1,7 +1,12 @@
 from flask import Flask, request
 from bank.bank import add_user, get_users, get_user, create_test_data
+import sys
+import logging
 
 app = Flask(__name__)
+
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+#app.logger.setLevel(logging.WARNING)
 
 @app.route('/')
 def index():
