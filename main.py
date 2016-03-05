@@ -1,5 +1,5 @@
 from flask import Flask, request
-from bank.bank import add_user, get_users, get_user, create_test_data
+from bank.bank import add_user, get_users, get_user
 import sys
 import logging
 
