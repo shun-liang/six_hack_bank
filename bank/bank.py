@@ -15,7 +15,7 @@ def get_user(username):
     for user in _users:
         if user.username == username:
             return user
-    return None 
+    return None
 
 def get_account(account_number):
     for account in _accounts:
@@ -32,7 +32,7 @@ class User:
     '''
     Represents a Telegram user.
     '''
-    
+
     aliases = []
 
     def __init__(self, username, account_number, sort_code):

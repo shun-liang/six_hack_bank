@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from bank.bank import add_user, get_users, get_user
 import sys
 import logging
@@ -10,7 +10,7 @@ app.logger.addHandler(logging.StreamHandler(sys.stdout))
 
 @app.route('/')
 def index():
-    return 'This is a ficiontal bank server.' 
+    return 'This is a ficiontal bank server.'
 
 @app.route('/start', methods=['POST'])
 def link_account():
@@ -68,15 +68,18 @@ def add_alias():
         user.add_alias(alias_name, account_number, sort_code)
         return ''
     else:
-        return jsonify(error='User does not exist.')
+        return make_response(jsonify(error='User does not exist.'), 400)
 
 @app.route('/balance/<username>', methods=['GET'])
 def get_balance(username):
     user = get_user(username)
+    print(user)
     if user:
-        return jsonify(balance=str(user.get_balance()))
+        return make_response(jsonify(balance=str(user.get_balance())), 200)
     else:
-        return jsonify(error='User does not exist.')
+        return make_response(jsonify(error='User does not exist.'), 400)
+
+
 
 @app.route('/transfer', methods=['POST'])
 def make_transfer():
@@ -89,15 +92,18 @@ def make_transfer():
     to_alias = request_json['to']
     amount = request_json['amount']
     user = get_user(username)
+    print(username)
+    print(user)
     if user:
         alias = user.get_alias(to_alias)
+        print(alias)
         if alias:
             user.transfer(alias.account.number, alias.account.sort_code, float(amount))
-            return jsonify(senderbalance=user.get_balance(), receiverbalance=alias.get_balance())
+            return make_response(jsonify(senderbalance=user.get_balance(), receiverbalance=alias.get_balance()), 200)
         else:
-            return 'alias does not exist'
-    else: 
-        return 'user does not exist'
+            return make_response(jsonify(error='alias does not exist'), 400)
+    else:
+        return make_response(jsonify(error='user does not exist'), 400)
 
 if __name__ == "__main__":
     app.run(debug=True)
