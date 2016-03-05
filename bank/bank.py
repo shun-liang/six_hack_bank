@@ -162,6 +162,3 @@ class Transaction:
             self.description = description
         else:
             self.description = ''
-
-    def __str__(self):
-        pass
