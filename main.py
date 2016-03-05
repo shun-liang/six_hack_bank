@@ -49,7 +49,7 @@ def change_card_state():
     username = request_json['username']
     card_alias = request_json['cardalias']
     action = request_json['action']
-    if action == 'lock':
+    if action == 'block':
         # Card locking logic
         #card_number = 1234123412341234
         user = get_user(username)
@@ -94,6 +94,10 @@ def make_transfer():
         if alias:
             user.transfer(alias.account.number, alias.account.sort_code, float(amount))
             return ''
+        else:
+            return 'alias does not exist'
+    else: 
+        return 'user does not exist'
 
 if __name__ == "__main__":
     app.run(debug=True)
