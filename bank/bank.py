@@ -23,10 +23,18 @@ def get_account(account_number):
             return account
     return None
 
+def add_account(account_number, sort_code):
+    new_account = Account(account_number, sort_code)
+    _accounts.append(new_account)
+    return new_account
+
 class User:
     '''
     Represents a Telegram user.
     '''
+    
+    aliases = []
+
     def __init__(self, username, account_number, sort_code):
         self.username = username
         self.account = MyAccount(account_number, sort_code)
@@ -47,6 +55,14 @@ class User:
     def lock_card(self, alias):
         self.account.lock_card(alias)
 
+    def add_alias(self, alias_name, account_number, sort_code):
+        new_alias = Alias(alias_name, account_number, sort_code)
+        self.aliases.append(new_alias)
+
+    def get_balance(self):
+        return self.account.get_balance()
+
+
 class MyAccount:
     '''
     Service interface of an account for a Telegram user.
@@ -54,7 +70,11 @@ class MyAccount:
     cards = {}
 
     def __init__(self, account_number, sort_code):
-        self.account = Account(account_number, sort_code)
+        account = get_account(account_number)
+        if account:
+            self.account = account
+        else:
+            self.account = add_account(account_number, sort_code)
         cards = []
 
     #def __repr__(self):
@@ -70,6 +90,22 @@ class MyAccount:
 
     def lock_card(self, alias):
         self.cards[alias].lock()
+
+    def get_balance(self):
+        return self.account.balance
+
+class Alias:
+    '''
+    Alias of a bank account.
+    '''
+
+    def __init__(self, alias_name, account_number, sort_code):
+        self.name = alias_name
+        account = get_account(account_number)
+        if account:
+            self.account = account
+        else:
+            self.account = add_account(account_number, sort_code)
 
 class Account:
     '''
@@ -89,6 +125,10 @@ class Account:
             self.transactions.append(Transaction(self.number, target.number, amount))
         else:
             raise ValueError('Not enough balance to proceed the transfer.')
+
+    def get_statement(self):
+        pass
+        #return str(transactions)
 
 class Card:
     '''
@@ -115,3 +155,6 @@ class Transaction:
             self.description = description
         else:
             self.description = ''
+
+    def __str__(self):
+        pass
