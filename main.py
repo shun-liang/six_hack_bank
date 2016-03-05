@@ -56,23 +56,44 @@ def change_card_state():
         user.lock_card(card_alias)
         return ''
 
-#@app.route('/aliase', methods=[])
+@app.route('/alias', methods=['PUT'])
+def add_alias():
+    request_json = request.get_json(force=True)
+    username = request_json['username']
+    alias_name = request_json['useralias']
+    account_number = request_json['accountnumber']
+    sort_code = request_json['sortcode']
+    user = get_user(username)
+    if user:
+        user.add_alias(alias_name, account_number, sort_code)
+        return ''
+    else:
+        return jsonify(error='User does not exist.')
 
 @app.route('/balance/<username>', methods=['GET'])
 def get_balance(username):
     user = get_user(username)
     if user:
-        return jsonify(balance=user.get_balance())
-
+        return jsonify(balance=str(user.get_balance()))
+    else:
+        return jsonify(error='User does not exist.')
 
 @app.route('/transfer', methods=['POST'])
 def make_transfer():
     '''
     Make a transfer to another bank account.
     '''
+
     request_json = request.get_json(force=True)
-    username = request_json['username']
-    to_alias = request_json['aliasname']
+    username = request_json['from']
+    to_alias = request_json['to']
+    amount = request_json['amount']
+    user = get_user(username)
+    if user:
+        alias = user.get_alias(to_alias)
+        if alias:
+            user.transfer(alias.account.number, alias.account.sort_code, float(amount))
+            return ''
 
 if __name__ == "__main__":
     app.run(debug=True)
