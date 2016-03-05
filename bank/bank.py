@@ -123,14 +123,12 @@ class Account:
         self.number = account_number
         self.sort_code = sort_code
         self.balance = 5000
+        print 'Account created. type(self.balance): %s' % type(self.balance)
 
     def transfer(self, target, amount):
-        if self.balance > amount:
-            self.balance -= amount
-            target.balance += amount
-            self.transactions.append(Transaction(self.number, target.number, amount))
-        else:
-            raise ValueError('Not enough balance to proceed the transfer.')
+        self.balance = (self.balance - amount)
+        target.balance = (target.balance + amount)
+        self.transactions.append(Transaction(self.number, target.number, amount))
 
     def get_statement(self):
         pass
