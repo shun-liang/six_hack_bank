@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from bank.bank import add_user, get_users, get_user
 import sys
 import logging
@@ -55,6 +55,24 @@ def change_card_state():
         user = get_user(username)
         user.lock_card(card_alias)
         return ''
+
+#@app.route('/aliase', methods=[])
+
+@app.route('/balance/<username>', methods=['GET'])
+def get_balance(username):
+    user = get_user(username)
+    if user:
+        return jsonify(balance=user.get_balance())
+
+
+@app.route('/transfer', methods=['POST'])
+def make_transfer():
+    '''
+    Make a transfer to another bank account.
+    '''
+    request_json = request.get_json(force=True)
+    username = request_json['username']
+    to_alias = request_json['aliasname']
 
 if __name__ == "__main__":
     app.run(debug=True)
