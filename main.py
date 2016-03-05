@@ -93,7 +93,7 @@ def make_transfer():
         alias = user.get_alias(to_alias)
         if alias:
             user.transfer(alias.account.number, alias.account.sort_code, float(amount))
-            return ''
+            return jsonify(senderbalance=user.get_balance(), receiverbalance=alias.get_balance())
         else:
             return 'alias does not exist'
     else: 

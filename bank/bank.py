@@ -113,6 +113,9 @@ class Alias:
         else:
             self.account = add_account(account_number, sort_code)
 
+    def get_balance(self):
+        return self.account.balance
+
 class Account:
     '''
     Represents a bank account.
